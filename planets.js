@@ -1,7 +1,7 @@
 
 const http = require('https');
-
-
+const findYearAndSizeModule = require('./findYearAndSize');
+const findYearAndSize = findYearAndSizeModule.findYearAndSize;
 // request planet information 
 http.get("https://gist.githubusercontent.com/joelbirchler/66cf8045fcbb6515557347c05d789b4a/raw/9a196385b44d4288431eef74896c0512bad3defe/exoplanets", res =>{
 
@@ -40,50 +40,22 @@ http.get("https://gist.githubusercontent.com/joelbirchler/66cf8045fcbb6515557347
                 hottest.planet = planets[i].PlanetIdentifier;
                 hottest.temp = planets[i].HostStarTempK;
             }
+
             findYearAndSize(planets[i], hash);
 
         }
         console.log(`number of orphan planets ${orphans}`);
         console.log(`Hottest Planet: ${hottest.planet}, with temp ${hottest.temp}`);
+
+        // this is unneccesary and was not a functional requirement, I thought it would be nicer to read it in order, but this can be removed for efficiency
         let hashSort = new Map([...hash.entries()].sort());
-        console.log(hashSort);
+        writeYears(hashSort);
     });
 });
 
-// Function to update our hashtable with planet sizes.
-function findYearAndSize(planet, hash){
-    // if we have no size, we're not going to count the planet, since the goal is to list sizes with year.
-    if(planet.RadiusJpt === ""){
-        return;
-    }
-    // If we already have something discovered this year, we're going to update the value
-    if(hash.has(planet.DiscoveryYear)){
-        sizes = hash.get(planet.DiscoveryYear);
-        sizes = updateSizes(planet, sizes)
-        hash.set(planet.Discovery, sizes);
-    }// if we don't have the year, we need to create a new key and value
-    else{// in a bigger program sizes would be a class, but since it's always initialized to 0, and doesn't have any methods. I did not feel the need to create one.
-        let sizes = {
-            small: 0,
-            medium: 0,
-            large: 0
-        } 
-        
-        sizes = updateSizes(planet, sizes);
-        hash.set(planet.DiscoveryYear, sizes);
-    }
-}
-// function to update the size value. 
-function updateSizes(planet, sizes){
-    // find the smallest and update it.
-    if(planet.RadiusJpt < 1){
-        sizes.small = sizes.small + 1;
-    }// check medium otherwise
-    else if(planet.RadiusJpt< 2 ){
-        sizes.medium = sizes.medium+ 1;
-    }// we've already elimanated unknown sizes, so it must be large
-    else{
-        sizes.large = sizes.large + 1;
-    }
-    return sizes;
+// function for iterating through a list and presenting the data
+function writeYears(hash){
+    hash.forEach((value, key)=>{
+        console.log(`In ${key} we dicsovered ${value.small} small planets, ${value.medium} medium planets, ${value.large} large planets.`);
+    })
 }
