@@ -9,4 +9,9 @@ If you do NOT have NODE.js on your computer, download it here https://nodejs.org
  If you do have, or have just installed NODE.js. You can run this program from a console with command "node planets.js". 
  To go over tests, run command "npm run test."
  
+ The main project consists of two programs planets.js, which is the main controller. And findYearAndSize.js which is a module that is imported and used by the main program. 
+ 
+ 
+ 
+ Issues with Tests:
  If you are having issues with the tests, run "npm install jest." You shouldn't need to do this due to package-JSON, but if it was not downloaded correctly this may help.  
